@@ -21,7 +21,7 @@ This assignment has two parts:
 
 You will implement a framework with the following architecture:
 
-![pubsub](images/pubsub.jpg)
+![pubsub](https://github.com/CS601-F18/projects/blob/master/images/pubsub.jpg)
 
 Any number of publishers may publish data by calling the method `publish` on the `Broker`. Any number of subscribers may `subscribe`, and the `Broker` will deliver each message to all subscribers via the `onEvent` method.
 
@@ -166,7 +166,7 @@ The only external libraries you may use for this assignment are [GSON](https://g
 
 To earn the final 5% on this assignment you will extend your part 1 implementation to allow a subscriber to execute on a separate host. Conceptually, this looks like the following:
 
-![pubsub](images/pubsubdistributed.jpg)
+![pubsub](https://github.com/CS601-F18/projects/raw/master/images/pubsubdistributed.jpg)
 
 ### Hints
 
@@ -175,7 +175,7 @@ To earn the final 5% on this assignment you will extend your part 1 implementati
 3. When a new item is published it will be forwarded from Host 1 to Host 2, then delivered to the subscriber.
 4. There are lots of ways to design a solution, however it is recommended that you modify the part 1 solution as little as possible. I have done this by implementing a `RemoteSubscriberProxy` that behaves like a normal `Subscriber` to the `Broker` on Host 1 but implements a server to accept connections from Host 2 and a client to forward items to Host 2. On Host 2, I implement a `RemoteBroker` that behaves like a normal `Broker` to the `Subscriber` on Host 2 but proxies messages coming from the `RemoteSubscriberProxy`. The figure below shows this implementation, omitting detail of the original publishers.
  	
-![pubsub](images/pubsubdistributedproxy.jpg)
+![pubsub](https://github.com/CS601-F18/projects/raw/master/images/pubsubdistributedproxy.jpg)
 
 
 ## Submission
