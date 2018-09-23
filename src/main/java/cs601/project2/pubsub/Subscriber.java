@@ -1,4 +1,4 @@
-package cs601.project2.models;
+package cs601.project2.pubsub;
 
 public interface Subscriber<T> {
 

@@ -1,6 +1,6 @@
-package cs601.project2.models;
+package cs601.project2.pubsub;
 
-public class AsyncOrderedDispatchBroker implements Broker<T> {
+public class AsyncOrderedDispatchBroker<T> implements Broker<T> {
 
 	public void publish(T item) {
 		// TODO Auto-generated method stub
