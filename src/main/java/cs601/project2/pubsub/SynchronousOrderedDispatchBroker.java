@@ -2,7 +2,7 @@ package cs601.project2.pubsub;
 
 import java.util.ArrayList;
 
-public class SynchronousOrderedDispatchBroker<T> implements Broker<T> {
+public final class SynchronousOrderedDispatchBroker<T> implements Broker<T> {
 
 	private static SynchronousOrderedDispatchBroker<?> synchronousOrderedDispatchBroker;
 	private ArrayList<Subscriber<T>> subscribers = new ArrayList<Subscriber<T>>();
