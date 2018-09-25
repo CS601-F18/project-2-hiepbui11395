@@ -11,10 +11,10 @@ public class Review {
 	private double overall;
 	private String summary;
 	private int unixReviewTime;
-	private Date reviewTime;
+	private String reviewTime;
 	
 	public Review(String id, String reviewerId, String asin, String reviewerName, String reviewText, double overall,
-			String summary, int unixReviewTime, Date reviewTime) {
+			String summary, int unixReviewTime, String reviewTime) {
 		super();
 		this.id = id;
 		this.reviewerId = reviewerId;
@@ -91,11 +91,11 @@ public class Review {
 		this.unixReviewTime = unixReviewTime;
 	}
 
-	public Date getReviewTime() {
+	public String getReviewTime() {
 		return reviewTime;
 	}
 
-	public void setReviewTime(Date reviewTime) {
+	public void setReviewTime(String reviewTime) {
 		this.reviewTime = reviewTime;
 	}
 	
