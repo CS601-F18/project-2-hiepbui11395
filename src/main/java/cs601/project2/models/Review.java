@@ -99,4 +99,7 @@ public class Review {
 		this.reviewTime = reviewTime;
 	}
 	
+	public String toString() {
+		return String.format(" Id: %s - Review Time: %s", this.getId(), this.getReviewTime());
+	}
 }

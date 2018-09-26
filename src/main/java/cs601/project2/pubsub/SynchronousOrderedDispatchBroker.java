@@ -2,25 +2,9 @@ package cs601.project2.pubsub;
 
 import java.util.ArrayList;
 
-public final class SynchronousOrderedDispatchBroker<T> implements Broker<T> {
-
-	private static SynchronousOrderedDispatchBroker<?> synchronousOrderedDispatchBroker;
+public class SynchronousOrderedDispatchBroker<T> implements Broker<T> {
 	private ArrayList<Subscriber<T>> subscribers = new ArrayList<Subscriber<T>>();
 
-	private SynchronousOrderedDispatchBroker() {
-
-	}
-
-	public static SynchronousOrderedDispatchBroker<?> getInstance() {
-		if(synchronousOrderedDispatchBroker == null) {
-			synchronized (SynchronousOrderedDispatchBroker.class) {
-				if(synchronousOrderedDispatchBroker == null) {
-					synchronousOrderedDispatchBroker = new SynchronousOrderedDispatchBroker<Object>();
-				}
-			}
-		}
-		return synchronousOrderedDispatchBroker;
-	}
 
 	public void publish(T item) {
 		// TODO A newly published item will be synchronously delivered to all subscribers. 
