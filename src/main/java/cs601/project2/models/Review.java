@@ -3,7 +3,6 @@ package cs601.project2.models;
 import java.util.Date;
 
 public class Review {
-	private String id;
 	private String reviewerId;
 	private String asin;
 	private String reviewerName;
@@ -13,10 +12,9 @@ public class Review {
 	private int unixReviewTime;
 	private String reviewTime;
 	
-	public Review(String id, String reviewerId, String asin, String reviewerName, String reviewText, double overall,
+	public Review(String reviewerId, String asin, String reviewerName, String reviewText, double overall,
 			String summary, int unixReviewTime, String reviewTime) {
 		super();
-		this.id = id;
 		this.reviewerId = reviewerId;
 		this.asin = asin;
 		this.reviewerName = reviewerName;
@@ -25,14 +23,6 @@ public class Review {
 		this.summary = summary;
 		this.unixReviewTime = unixReviewTime;
 		this.reviewTime = reviewTime;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getReviewerId() {
@@ -100,6 +90,6 @@ public class Review {
 	}
 	
 	public String toString() {
-		return String.format(" Id: %s - Review Time: %s", this.getId(), this.getReviewTime());
+		return String.format("Review Time: %s", this.getReviewTime());
 	}
 }

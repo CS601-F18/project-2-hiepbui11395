@@ -1,5 +1,7 @@
 package cs601.project2.pubsub;
 
+import java.util.concurrent.TimeUnit;
+
 public class BrokerBlockingQueue<T> {
 	private T[] items;
 	private int start;
@@ -35,6 +37,28 @@ public class BrokerBlockingQueue<T> {
 		while(size == 0) {
 			try {
 				this.wait();
+			} catch (InterruptedException ie) {
+				ie.printStackTrace();
+			}
+		}
+		T item = items[start];
+		start = (start+1)%items.length;
+		size--;
+		if(size == items.length-1) {
+			this.notifyAll();
+		}
+		return item;
+	}
+	
+	public synchronized T poll(long timeOut, TimeUnit unit) {
+		while(size == 0) {
+			try {
+				long start = System.currentTimeMillis();
+				this.wait(TimeUnit.MILLISECONDS.convert(timeOut, unit));
+				long endTime = System.currentTimeMillis() - start;
+				if ( endTime >= TimeUnit.MILLISECONDS.convert(timeOut, unit) ) {
+					return null;
+				};
 			} catch (InterruptedException ie) {
 				ie.printStackTrace();
 			}

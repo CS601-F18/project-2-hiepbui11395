@@ -32,7 +32,6 @@ public class PublisherRunner implements Runnable{
 		try(BufferedReader br = Files.newBufferedReader(path, Charset.forName("ISO-8859-1"))){
 			while((line=br.readLine()) != null) {
 				Review review = gson.fromJson(line, Review.class);
-				review.setId(Integer.toString(++count));
 				this.broker.publish(review);
 			}
 		} catch (IOException ioe) {

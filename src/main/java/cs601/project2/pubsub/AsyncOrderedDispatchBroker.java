@@ -18,16 +18,15 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	}
 
 	public void shutdown() {
-		// TODO Auto-generated method stub
-		
+		this.publish(null);
 	}
-
 	
 	@Override
 	public void run() {
-		while(true) {
-			T itemBeSent = queue.take();
-			subscribers.forEach(subscriber -> subscriber.onEvent(itemBeSent));
+		T itemBeSent;
+		while((itemBeSent = queue.take()) != null) {
+			T result = itemBeSent;
+			subscribers.forEach(subscriber -> subscriber.onEvent(result));
 		}
 	}
 
