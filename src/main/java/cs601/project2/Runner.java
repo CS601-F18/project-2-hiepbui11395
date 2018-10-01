@@ -1,62 +1,88 @@
 package cs601.project2;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import cs601.project2.models.Review;
 import cs601.project2.pubsub.AsyncOrderedDispatchBroker;
 import cs601.project2.pubsub.AsyncUnorderedDispatchBroker;
+import cs601.project2.pubsub.Broker;
+import cs601.project2.pubsub.Subscriber;
 import cs601.project2.pubsub.SynchronousOrderedDispatchBroker;
 
 public class Runner {
+
 	public static void main(String[] args) {
-		Runner.asyncRunner(args[1], args[3]);
+		ArrayList<String> reviewFileNames = Utils.getFilesFromConfiguration("Review","FileName");
+		if(reviewFileNames == null || reviewFileNames.isEmpty()) {
+			System.out.println("Errors in configuration file, try again!");
+			System.exit(1);
+		}
+		Runner.syncRunner(reviewFileNames);
+		Runner.asyncRunner(reviewFileNames);
+		Runner.asyncUnorderedRunner(reviewFileNames);
 	}
+
 	
-	private static void syncRunner(String url1, String url2) {
+	/**
+	 * Published item synchronously and in order
+	 * @param reviewFileNames input file name
+	 */
+	private static void syncRunner(ArrayList<String> reviewFileNames) {
+		System.out.println("Synchronous Ordered Dispatch Broker - Running");
 		long start = System.currentTimeMillis();
 		SynchronousOrderedDispatchBroker<Review> broker = new SynchronousOrderedDispatchBroker<Review>();
-		
+
 		//Run subscriber
 		OldReviewSubscriber ors = new OldReviewSubscriber();
 		NewReviewSubscriber nrs = new NewReviewSubscriber();
 		broker.subscribe(ors);
 		broker.subscribe(nrs);
-		
+
 		//Run publisher
-		Thread threadPublisher1 = new Thread(new PublisherRunner(url1, broker));
-		Thread threadPublisher2 = new Thread(new PublisherRunner(url2, broker));
-		//
-		threadPublisher1.start();
-		threadPublisher2.start();		
+		ExecutorService threadPool = Executors.newFixedThreadPool(10);
+		for(String fileName : reviewFileNames) {
+			threadPool.execute(new PublisherRunner(fileName, broker));
+		}
+		threadPool.shutdown();
 		try {
-			threadPublisher1.join();
-			threadPublisher2.join();
+			threadPool.awaitTermination(5, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		Utils.closeStream(ors.getBw());
 		Utils.closeStream(nrs.getBw());
 		long end = System.currentTimeMillis();
-		System.out.println("time: " + (end-start));
+		System.out.println("time: " + (end-start) + "\n");
 	}
-	
-	private static void asyncRunner(String url1, String url2) {
+
+	/**
+	 * Published item asynchronously and in order
+	 * @param reviewFileNames input file name
+	 */
+	private static void asyncRunner(ArrayList<String> reviewFileNames) {
+		System.out.println("Async Ordered Dispatch Broker - Running");
 		long start = System.currentTimeMillis();
 		AsyncOrderedDispatchBroker<Review> broker = new AsyncOrderedDispatchBroker<Review>();
-		
+
 		//Run subscriber
 		OldReviewSubscriber ors = new OldReviewSubscriber();
 		NewReviewSubscriber nrs = new NewReviewSubscriber();
 		broker.subscribe(ors);
 		broker.subscribe(nrs);
-		
-		Thread threadPublisher1 = new Thread(new PublisherRunner(url1, broker));
-		Thread threadPublisher2 = new Thread(new PublisherRunner(url2, broker));
+
+		//Run publisher
+		ExecutorService threadPool = Executors.newFixedThreadPool(10);
+		for(String fileName : reviewFileNames) {
+			threadPool.execute(new PublisherRunner(fileName, broker));
+		}
+		threadPool.shutdown();
 		Thread threadBroker = new Thread(broker);
 		threadBroker.start();
-		threadPublisher1.start();
-		threadPublisher2.start();	
 		try {
-			threadPublisher1.join();
-			threadPublisher2.join();
+			threadPool.awaitTermination(5, TimeUnit.MINUTES);
 			//Add null to end broker
 			broker.shutdown();
 			threadBroker.join();
@@ -65,30 +91,35 @@ public class Runner {
 		}
 		Utils.closeStream(ors.getBw());
 		Utils.closeStream(nrs.getBw());
-		
+
 		long end = System.currentTimeMillis();
-		System.out.println("time: " + (end-start));
+		System.out.println("time: " + (end-start) + "\n");
 	}
-	
-	private static void asyncUnorderedRunner(String url1, String url2) {
+
+	/**
+	 * Publish item asynchronously without order
+	 * @param reviewFileNames input file name
+	 */
+	private static void asyncUnorderedRunner(ArrayList<String> reviewFileNames) {
+		System.out.println("Async Unordered Dispatch Broker - Running");
 		long start = System.currentTimeMillis();
-		
+
 		AsyncUnorderedDispatchBroker<Review> broker = new AsyncUnorderedDispatchBroker<Review>();
-		
+
 		//Run subscriber
 		OldReviewSubscriber ors = new OldReviewSubscriber();
 		NewReviewSubscriber nrs = new NewReviewSubscriber();
 		broker.subscribe(ors);
 		broker.subscribe(nrs);
-		
+
 		//Run publisher
-		Thread threadPublisher1 = new Thread(new PublisherRunner(url1, broker));
-		Thread threadPublisher2 = new Thread(new PublisherRunner(url2, broker));
-		threadPublisher1.start();
-		threadPublisher2.start();	
+		ExecutorService threadPool = Executors.newFixedThreadPool(10);
+		for(String fileName : reviewFileNames) {
+			threadPool.execute(new PublisherRunner(fileName, broker));
+		}
+		threadPool.shutdown();
 		try {
-			threadPublisher1.join();
-			threadPublisher2.join();
+			threadPool.awaitTermination(5, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -96,6 +127,18 @@ public class Runner {
 		Utils.closeStream(ors.getBw());
 		Utils.closeStream(nrs.getBw());
 		long end = System.currentTimeMillis();
-		System.out.println("time: " + (end-start));
+		System.out.println("time: " + (end-start) + "\n");
+	}
+
+	private static ArrayList<Subscriber<Review>> subscriceBroker(Broker<Review> broker) {
+		//Run subscriber
+		OldReviewSubscriber ors = new OldReviewSubscriber();
+		NewReviewSubscriber nrs = new NewReviewSubscriber();
+		ArrayList<Subscriber<Review>> subscribers = new ArrayList<Subscriber<Review>>();
+		subscribers.add(ors);
+		subscribers.add(nrs);
+		broker.subscribe(ors);
+		broker.subscribe(nrs);
+		return subscribers;
 	}
 }

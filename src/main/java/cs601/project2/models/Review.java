@@ -1,7 +1,5 @@
 package cs601.project2.models;
 
-import java.util.Date;
-
 public class Review {
 	private String reviewerId;
 	private String asin;

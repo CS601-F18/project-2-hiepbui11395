@@ -19,7 +19,7 @@ public class OldReviewSubscriber implements Subscriber<Review> {
 	}
 
 	public OldReviewSubscriber() {
-		Path path = Paths.get("OldReview.json");
+		Path path = Paths.get("OldReviews.json");
 		try {
 			Files.deleteIfExists(path);
 			bw = new BufferedWriter(new FileWriter(path.getFileName().toString(), true));
@@ -32,7 +32,6 @@ public class OldReviewSubscriber implements Subscriber<Review> {
 	public void onEvent(Review item) {
 		if(item.getUnixReviewTime() <= 1362268800) {
 			Utils.writeToFile(bw, item);
-//			System.out.println("Old" + (++count));
 		}
 	}
 

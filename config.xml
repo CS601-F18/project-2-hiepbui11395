@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+	<Reviews>
+		<Review>
+			<Name>Reviews apps for android</Name>
+			<FileName>reviews_Apps_for_Android_5.json</FileName>
+		</Review>
+		<Review>
+			<Name>Reviews home and kitcher</Name>
+			<FileName>reviews_Home_and_Kitchen_5.json</FileName>
+		</Review>
+	</Reviews>
+	<Results>
+		<Result>
+			<Name>Old Reviews</Name>
+			<FileName>OldReviews.json</FileName>
+		</Result>
+		<Result>
+			<Name>New Reviews</Name>
+			<FileName>New Reviews.json</FileName>
+		</Result>
+	</Results>
+	<Ports>
+		<Brokers>
+			<Broker>
+				<Host>localhost</Host>
+				<Port>1024</Port>
+			</Broker>
+		</Brokers>
+		<Subscribers>
+			<Subscriber>
+				<Host>localhost</Host>
+				<Port>1025</Port>
+			</Subscriber>
+		</Subscribers>
+	</Ports>
+</Settings>

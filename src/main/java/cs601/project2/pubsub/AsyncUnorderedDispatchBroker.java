@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	private ArrayList<Subscriber<T>> subscribers = new ArrayList<Subscriber<T>>();
 	ExecutorService threadPool = Executors.newFixedThreadPool(10);
-	
+
 	public synchronized void publish(T item) {
 		threadPool.execute(new Runnable() {
 			public void run() {
@@ -22,7 +22,6 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 
 	public void subscribe(Subscriber<T> subscriber) {
 		synchronized(subscribers) {
-			System.out.println("Added");
 			subscribers.add(subscriber);
 		}
 	}

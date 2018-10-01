@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import cs601.project2.models.Review;
-import cs601.project2.pubsub.Broker;
 import cs601.project2.pubsub.Subscriber;
 
 public class NewReviewSubscriber implements Subscriber<Review> {
@@ -20,7 +19,7 @@ public class NewReviewSubscriber implements Subscriber<Review> {
 	}
 	
 	public NewReviewSubscriber() {
-		Path path = Paths.get("NewReview.json");
+		Path path = Paths.get("NewReviews.json");
 		try {
 			Files.deleteIfExists(path);
 			bw = new BufferedWriter(new FileWriter(path.getFileName().toString(), true));
@@ -33,7 +32,6 @@ public class NewReviewSubscriber implements Subscriber<Review> {
 	public void onEvent(Review item) {
 		if(item.getUnixReviewTime() > 1362268800) {
 			Utils.writeToFile(bw, item);
-//			System.out.println("New" + (++count));
 		}
 	}
 

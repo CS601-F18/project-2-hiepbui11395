@@ -16,7 +16,7 @@ public class PublisherRunner implements Runnable{
 	private String url;
 	private Broker<Review> broker;
 
-	public PublisherRunner(String url, Broker broker) {
+	public PublisherRunner(String url, Broker<Review> broker) {
 		super();
 		this.url = url;
 		this.broker = broker;
@@ -24,11 +24,9 @@ public class PublisherRunner implements Runnable{
 
 	@Override
 	public void run() {
-		System.out.println("Publishing");
 		Gson gson = new Gson();
 		Path path = Paths.get(url);
 		String line = "";
-		int count = 0;
 		try(BufferedReader br = Files.newBufferedReader(path, Charset.forName("ISO-8859-1"))){
 			while((line=br.readLine()) != null) {
 				Review review = gson.fromJson(line, Review.class);
