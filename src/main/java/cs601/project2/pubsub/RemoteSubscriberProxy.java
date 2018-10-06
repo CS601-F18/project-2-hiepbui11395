@@ -1,4 +1,4 @@
-package cs601.project2;
+package cs601.project2.pubsub;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,20 +9,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import cs601.project2.pubsub.Subscriber;
+import cs601.project2.models.Review;
 
-public class RemoteSubscriberProxy implements Subscriber{
+public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 	
 	final static String EOT = "EOT";
 	final static int PORTSUBSCRIBER = 1025;
 	final static int PORTBROKER = 1024;
 
-	ArrayList<RemoteBroker> broker = new ArrayList<RemoteBroker>();
-	public static void main(String[] args) {
+	ArrayList<RemoteBrokerProxy> broker = new ArrayList<RemoteBrokerProxy>();
 
-	}
-
-	private static void runServer() {
+	private void runServer() {
 		try (
 				ServerSocket server = new ServerSocket(PORTSUBSCRIBER);
 				Socket socker = server.accept();
@@ -39,7 +36,7 @@ public class RemoteSubscriberProxy implements Subscriber{
 		}
 	}
 
-	private static void runClient() {
+	private void runClient() {
 		try (
 				Socket socket = new Socket(InetAddress.getLocalHost(), PORTBROKER);
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
@@ -51,8 +48,14 @@ public class RemoteSubscriberProxy implements Subscriber{
 	}
 
 	@Override
-	public void onEvent(Object item) {
+	public void onEvent(Review item) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void run() {
+		this.runServer();
+		this.runClient();
 	}
 }

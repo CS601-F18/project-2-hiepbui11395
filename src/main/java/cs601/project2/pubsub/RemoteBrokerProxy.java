@@ -1,4 +1,4 @@
-package cs601.project2;
+package cs601.project2.pubsub;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,10 +8,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import cs601.project2.pubsub.Broker;
-import cs601.project2.pubsub.Subscriber;
-
-public class RemoteBroker<T> implements Broker<T>{
+public class RemoteBrokerProxy<T> implements Broker<T>, Runnable {
 
 	final static String EOT = "EOT";
 	final static int PORTSUBSCRIBER = 1025;
@@ -61,5 +58,11 @@ public class RemoteBroker<T> implements Broker<T>{
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
+	}
+
+	@Override
+	public void run() {
+		runClient();
+		runServer();
 	}
 }

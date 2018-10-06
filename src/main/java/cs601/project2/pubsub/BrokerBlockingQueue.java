@@ -55,8 +55,8 @@ public class BrokerBlockingQueue<T> {
 			try {
 				long start = System.currentTimeMillis();
 				this.wait(TimeUnit.MILLISECONDS.convert(timeOut, unit));
-				long endTime = System.currentTimeMillis() - start;
-				if ( endTime >= TimeUnit.MILLISECONDS.convert(timeOut, unit) ) {
+				long duration = System.currentTimeMillis() - start;
+				if ( duration >= TimeUnit.MILLISECONDS.convert(timeOut, unit) ) {
 					return null;
 				};
 			} catch (InterruptedException ie) {

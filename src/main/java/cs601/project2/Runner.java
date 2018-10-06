@@ -9,6 +9,7 @@ import cs601.project2.models.Review;
 import cs601.project2.pubsub.AsyncOrderedDispatchBroker;
 import cs601.project2.pubsub.AsyncUnorderedDispatchBroker;
 import cs601.project2.pubsub.Broker;
+import cs601.project2.pubsub.RemoteSubscriberProxy;
 import cs601.project2.pubsub.Subscriber;
 import cs601.project2.pubsub.SynchronousOrderedDispatchBroker;
 
@@ -23,6 +24,19 @@ public class Runner {
 		Runner.syncRunner(reviewFileNames);
 		Runner.asyncRunner(reviewFileNames);
 		Runner.asyncUnorderedRunner(reviewFileNames);
+		
+		
+//		SynchronousOrderedDispatchBroker<Review> broker = new SynchronousOrderedDispatchBroker<Review>();
+//		RemoteSubscriberProxy subscriber = new RemoteSubscriberProxy();
+//		broker.subscribe(subscriber);
+//		Thread subscriberServer = new Thread(subscriber);
+//		subscriberServer.start();
+//		try {
+//			subscriberServer.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	
