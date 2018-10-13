@@ -8,9 +8,6 @@ import java.util.concurrent.TimeUnit;
 import cs601.project2.models.Review;
 import cs601.project2.pubsub.AsyncOrderedDispatchBroker;
 import cs601.project2.pubsub.AsyncUnorderedDispatchBroker;
-import cs601.project2.pubsub.Broker;
-import cs601.project2.pubsub.RemoteSubscriberProxy;
-import cs601.project2.pubsub.Subscriber;
 import cs601.project2.pubsub.SynchronousOrderedDispatchBroker;
 
 public class Runner {
@@ -25,18 +22,6 @@ public class Runner {
 		Runner.asyncRunner(reviewFileNames);
 		Runner.asyncUnorderedRunner(reviewFileNames);
 		
-		
-//		SynchronousOrderedDispatchBroker<Review> broker = new SynchronousOrderedDispatchBroker<Review>();
-//		RemoteSubscriberProxy subscriber = new RemoteSubscriberProxy();
-//		broker.subscribe(subscriber);
-//		Thread subscriberServer = new Thread(subscriber);
-//		subscriberServer.start();
-//		try {
-//			subscriberServer.join();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 
 	
@@ -46,15 +31,28 @@ public class Runner {
 	 */
 	private static void syncRunner(ArrayList<String> reviewFileNames) {
 		System.out.println("Synchronous Ordered Dispatch Broker - Running");
-		long start = System.currentTimeMillis();
 		SynchronousOrderedDispatchBroker<Review> broker = new SynchronousOrderedDispatchBroker<Review>();
-
 		//Run subscriber
 		OldReviewSubscriber ors = new OldReviewSubscriber();
 		NewReviewSubscriber nrs = new NewReviewSubscriber();
 		broker.subscribe(ors);
 		broker.subscribe(nrs);
+		
 
+//		RemoteSubscriberProxy remoteSubscriber = new RemoteSubscriberProxy();
+//		broker.subscribe(remoteSubscriber);
+//		Thread remoteSubscriberThread = new Thread(remoteSubscriber);
+//		remoteSubscriberThread.start();
+//		try {
+//			System.out.println("Waiting for publisher!");
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+
+
+		long start = System.currentTimeMillis();
 		//Run publisher
 		ExecutorService threadPool = Executors.newFixedThreadPool(10);
 		for(String fileName : reviewFileNames) {
@@ -66,8 +64,15 @@ public class Runner {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+//		try {
+//			remoteSubscriberThread.join();
+//		} catch (InterruptedException e1) {
+//			e1.printStackTrace();
+//		}
+		
 		Utils.closeStream(ors.getBw());
 		Utils.closeStream(nrs.getBw());
+		broker.shutdown();
 		long end = System.currentTimeMillis();
 		System.out.println("time: " + (end-start) + "\n");
 	}
@@ -142,17 +147,5 @@ public class Runner {
 		Utils.closeStream(nrs.getBw());
 		long end = System.currentTimeMillis();
 		System.out.println("time: " + (end-start) + "\n");
-	}
-
-	private static ArrayList<Subscriber<Review>> subscriceBroker(Broker<Review> broker) {
-		//Run subscriber
-		OldReviewSubscriber ors = new OldReviewSubscriber();
-		NewReviewSubscriber nrs = new NewReviewSubscriber();
-		ArrayList<Subscriber<Review>> subscribers = new ArrayList<Subscriber<Review>>();
-		subscribers.add(ors);
-		subscribers.add(nrs);
-		broker.subscribe(ors);
-		broker.subscribe(nrs);
-		return subscribers;
 	}
 }

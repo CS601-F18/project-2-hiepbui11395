@@ -18,8 +18,11 @@ public class SynchronousOrderedDispatchBroker<T> implements Broker<T> {
 	}
 
 	public void shutdown() {
-		// TODO Auto-generated method stub
-
+		for(Subscriber<T> subscriber : subscribers) {
+			if(subscriber instanceof RemoteSubscriberProxy) {
+				((RemoteSubscriberProxy)subscriber).closeSocket();
+			}
+		}
 	}
 
 }
