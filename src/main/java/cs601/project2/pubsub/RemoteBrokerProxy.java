@@ -18,7 +18,6 @@ import cs601.project2.Utils;
 import cs601.project2.models.Review;
 
 public class RemoteBrokerProxy<T> implements Broker<T> {
-
 	Gson gson = new Gson();
 
 	private ArrayList<Subscriber<T>> subscribers = new ArrayList<Subscriber<T>>();
@@ -79,7 +78,6 @@ public class RemoteBrokerProxy<T> implements Broker<T> {
 	public void runClient() {
 		System.out.println("Broker Client: Send information to remote subscriber!");
 		try (
-//				Socket socket = new Socket("10.0.1.150", PORTSUBSCRIBER);
 				Socket socket = new Socket(Utils.SUBSCRIBERIP, Utils.SUBSCRIBERPORT);
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
 				){

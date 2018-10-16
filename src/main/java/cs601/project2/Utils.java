@@ -203,7 +203,6 @@ public class Utils {
 	 * @param reviewFileNames input file name
 	 */
 	private static void remoteRunner(ArrayList<String> reviewFileNames) {
-		System.out.println("Async Unordered Dispatch Broker - Running");
 		long start = System.currentTimeMillis();
 
 		SynchronousOrderedDispatchBroker<Review> broker = new SynchronousOrderedDispatchBroker<Review>();
@@ -219,7 +218,7 @@ public class Utils {
 		Thread remoteSubscriberThread = new Thread(remoteSubscriber);
 		remoteSubscriberThread.start();
 		try {
-			remoteSubscriberThread.join(2000);;
+			remoteSubscriberThread.join(2000);
 		} catch (InterruptedException e2) {
 			e2.printStackTrace();
 		}
@@ -237,6 +236,7 @@ public class Utils {
 		}
 		broker.shutdown();
 		Utils.closeStream(ors.getBw());
+		remoteSubscriberThread.interrupt();
 		long end = System.currentTimeMillis();
 		System.out.println("time: " + (end-start) + "\n");
 	}

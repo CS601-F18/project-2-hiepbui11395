@@ -14,14 +14,13 @@ import cs601.project2.Utils;
 import cs601.project2.models.Review;
 
 public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
-
 	Gson gson = new Gson();
 	final String EOT = "EOT";
-	
+
 	private ArrayList<Socket> socketList = new ArrayList<Socket>();
 	private ArrayList<PrintWriter> printWriterList = new ArrayList<PrintWriter>();
 
-	
+
 	private void parseAddress(String message) {
 		String[] lines = message.split("&");
 		String ip = "";
@@ -34,7 +33,7 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 				port = Integer.parseInt(set[1]);
 			}
 		}
-		
+
 		//Init socket and PrintWriter to send to Remote Broker
 		try {
 			Socket socket = new Socket(ip, port);
@@ -46,7 +45,7 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 			e.printStackTrace();
 		}
 	}
-	
+
 
 	//Work as a server to receive data from remote broker
 	private void runServer() {
@@ -61,13 +60,12 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 				parseAddress(line);
 				line = br.readLine();
 			}
+
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
-		}
+		} 
 		System.out.println("Subscriber server: Shutdown ");
 	}
-	
-
 
 	@Override
 	public void onEvent(Review item) {
@@ -77,7 +75,7 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 			out.println(itemJson);
 		}
 	}
-	
+
 	public void closeSocket() {
 		for(PrintWriter out : printWriterList) {
 			out.println(EOT);
@@ -93,9 +91,9 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 
 	@Override
 	public void run() {
-		
+
 		this.runServer();
-		
-		
+
+
 	}
 }
