@@ -21,17 +21,23 @@
 		</Result>
 	</Results>
 	<Ports>
-		<Brokers>
-			<Broker>
-				<Host>localhost</Host>
-				<Port>1024</Port>
-			</Broker>
-		</Brokers>
-		<Subscribers>
-			<Subscriber>
-				<Host>localhost</Host>
-				<Port>1025</Port>
-			</Subscriber>
-		</Subscribers>
+		<Broker>
+			<Ip></Ip>
+			<Port>1025</Port>
+		</Broker>
+		<Subscriber>
+			<!-- <Ip>10.0.1.150</Ip> -->
+			<Ip>localhost</Ip>
+			<Port>1024</Port>
+		</Subscriber>
 	</Ports>
+	<BlockingQueue>
+		<NumberOfQueue>20</NumberOfQueue>
+		<PollTime>1</PollTime>
+	</BlockingQueue>
+	<ThreadPool>
+		<NumberOfThreadPool>10</NumberOfThreadPool>
+		<AwaitTime>5</AwaitTime>
+	</ThreadPool>
+	
 </Settings>

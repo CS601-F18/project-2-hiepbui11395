@@ -5,9 +5,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import cs601.project2.Utils;
+
 public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
-	private ArrayList<Subscriber<T>> subscribers = new ArrayList<Subscriber<T>>();
-	ExecutorService threadPool = Executors.newFixedThreadPool(10);
+	private ArrayList<Subscriber<T>> subscribers;
+	private ExecutorService threadPool;
+	
+	
+
+	public AsyncUnorderedDispatchBroker() {
+		this.subscribers = new ArrayList<Subscriber<T>>();
+		this.threadPool = Executors.newFixedThreadPool(Utils.NUMOFTHREADPOOL);
+	}
 
 	public synchronized void publish(T item) {
 		threadPool.execute(new Runnable() {
@@ -29,9 +38,14 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	public void shutdown() {
 		threadPool.shutdown();
 		try {
-			threadPool.awaitTermination(2, TimeUnit.MINUTES);
+			threadPool.awaitTermination(Utils.AWAITTIME, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+		for(Subscriber<T> subscriber : subscribers) {
+			if(subscriber instanceof RemoteSubscriberProxy) {
+				((RemoteSubscriberProxy)subscriber).closeSocket();
+			}
 		}
 	}
 

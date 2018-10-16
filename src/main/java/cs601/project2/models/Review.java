@@ -1,7 +1,7 @@
 package cs601.project2.models;
 
 public class Review {
-	private String reviewerId;
+	private String reviewerID;
 	private String asin;
 	private String reviewerName;
 	private String reviewText;
@@ -10,10 +10,10 @@ public class Review {
 	private int unixReviewTime;
 	private String reviewTime;
 	
-	public Review(String reviewerId, String asin, String reviewerName, String reviewText, double overall,
+	public Review(String reviewerID, String asin, String reviewerName, String reviewText, double overall,
 			String summary, int unixReviewTime, String reviewTime) {
 		super();
-		this.reviewerId = reviewerId;
+		this.reviewerID = reviewerID;
 		this.asin = asin;
 		this.reviewerName = reviewerName;
 		this.reviewText = reviewText;
@@ -23,12 +23,12 @@ public class Review {
 		this.reviewTime = reviewTime;
 	}
 
-	public String getReviewerId() {
-		return reviewerId;
+	public String getReviewerID() {
+		return reviewerID;
 	}
 
-	public void setReviewerId(String reviewerId) {
-		this.reviewerId = reviewerId;
+	public void setReviewerID(String reviewerID) {
+		this.reviewerID = reviewerID;
 	}
 
 	public String getAsin() {

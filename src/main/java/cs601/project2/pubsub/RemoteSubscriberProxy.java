@@ -10,14 +10,13 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
+import cs601.project2.Utils;
 import cs601.project2.models.Review;
 
 public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 
 	Gson gson = new Gson();
 	final String EOT = "EOT";
-	final int PORTSUBSCRIBER = 1024;
-	int count = 0;
 	
 	private ArrayList<Socket> socketList = new ArrayList<Socket>();
 	private ArrayList<PrintWriter> printWriterList = new ArrayList<PrintWriter>();
@@ -51,9 +50,9 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 
 	//Work as a server to receive data from remote broker
 	private void runServer() {
-		System.out.println("Remote subscriber server run: ");
+		System.out.println("Subscriber server: Running ");
 		try (
-				ServerSocket server = new ServerSocket(PORTSUBSCRIBER);
+				ServerSocket server = new ServerSocket(Utils.SUBSCRIBERPORT);
 				Socket socker = server.accept();
 				BufferedReader br = new BufferedReader(new InputStreamReader(socker.getInputStream()));
 				) {
@@ -65,6 +64,7 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
+		System.out.println("Subscriber server: Shutdown ");
 	}
 	
 
@@ -76,11 +76,9 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 		for(PrintWriter out : printWriterList) {
 			out.println(itemJson);
 		}
-		count++;
 	}
 	
 	public void closeSocket() {
-		System.out.println(count);
 		for(PrintWriter out : printWriterList) {
 			out.println(EOT);
 		}
@@ -96,20 +94,7 @@ public class RemoteSubscriberProxy implements Subscriber<Review>, Runnable{
 	@Override
 	public void run() {
 		
-		Thread server = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				runServer();
-			}
-			
-		});
-		server.start();
-		try {
-			server.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		this.runServer();
 		
 		
 	}

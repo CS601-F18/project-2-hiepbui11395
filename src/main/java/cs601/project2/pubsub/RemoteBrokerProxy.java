@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 
+import cs601.project2.Utils;
 import cs601.project2.models.Review;
 
 public class RemoteBrokerProxy<T> implements Broker<T> {
@@ -21,10 +22,8 @@ public class RemoteBrokerProxy<T> implements Broker<T> {
 	Gson gson = new Gson();
 
 	private ArrayList<Subscriber<T>> subscribers = new ArrayList<Subscriber<T>>();
-	ExecutorService threadPool = Executors.newFixedThreadPool(10);
+	ExecutorService threadPool = Executors.newFixedThreadPool(Utils.NUMOFTHREADPOOL);
 	final static String EOT = "EOT";
-	final static int MYPORT = 1025;
-	final static int PORTSUBSCRIBER = 1024;
 
 
 	@Override
@@ -58,10 +57,9 @@ public class RemoteBrokerProxy<T> implements Broker<T> {
 	//Work as a server to receive data from remote subscriber
 	@SuppressWarnings("unchecked")
 	public void runServer() {
-		int count = 0;
-		System.out.println("Remote broker run:");
+		System.out.println("Broker Server: Running");
 		try (
-				ServerSocket server = new ServerSocket(MYPORT);
+				ServerSocket server = new ServerSocket(Utils.BROKERPORT);
 				Socket socker = server.accept();
 				BufferedReader br = new BufferedReader(new InputStreamReader(socker.getInputStream()));
 				) {
@@ -70,29 +68,28 @@ public class RemoteBrokerProxy<T> implements Broker<T> {
 				Review review = gson.fromJson(line, Review.class);
 				this.publish((T) review);
 				line = br.readLine();
-				count++;
-//				System.out.println(line);
 			}
-			System.out.println(line);
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
-		System.out.println(count);
+		System.out.println("Broker Server: Shutdown");
 	}
 
 	//Work as a client to send information to the remote subscriber
 	public void runClient() {
-		System.out.println("Send information to remote subscriber!");
+		System.out.println("Broker Client: Send information to remote subscriber!");
 		try (
-				Socket socket = new Socket("10.0.1.150", PORTSUBSCRIBER);
+//				Socket socket = new Socket("10.0.1.150", PORTSUBSCRIBER);
+				Socket socket = new Socket(Utils.SUBSCRIBERIP, Utils.SUBSCRIBERPORT);
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
 				){
 			out.println("IP:" + InetAddress.getLocalHost().getHostAddress() 
-					+ "&PORT:" + MYPORT);
+					+ "&PORT:" + Utils.BROKERPORT);
 			//print the end of transmission token
 			out.println("EOT");
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
+		System.out.println("Broker Client: Shutdown");
 	}
 }

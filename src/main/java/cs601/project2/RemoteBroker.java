@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import cs601.project2.models.Review;
 import cs601.project2.pubsub.RemoteBrokerProxy;
-import cs601.project2.pubsub.RemoteSubscriberProxy;
 
-public class Runner2 {
+public class RemoteBroker {
 	public static void main(String[] args) {
-		ArrayList<String> reviewFileNames = Utils.getFilesFromConfiguration("Review","FileName");
+		Utils.initValue();
+		ArrayList<String> reviewFileNames = Utils.getXmlConfiguration("Review","FileName");
 		if(reviewFileNames == null || reviewFileNames.isEmpty()) {
 			System.out.println("Errors in configuration file, try again!");
 			System.exit(1);
@@ -17,7 +17,7 @@ public class Runner2 {
 		RemoteBrokerProxy<Review> remoteBroker = new RemoteBrokerProxy<Review>();
 		NewReviewSubscriber subscriber = new NewReviewSubscriber();
 		remoteBroker.subscribe(subscriber);
-
+ 
 		Thread server = new Thread(new Runnable() {
 
 			@Override
