@@ -98,6 +98,7 @@ public class Utils {
 	 */
 	private static void syncRunner(ArrayList<String> reviewFileNames) {
 		System.out.println("Synchronous Ordered Dispatch Broker - Running");
+		long start = System.currentTimeMillis();
 		SynchronousOrderedDispatchBroker<Review> broker = new SynchronousOrderedDispatchBroker<Review>();
 		//Run subscriber
 		OldReviewSubscriber ors = new OldReviewSubscriber();
@@ -106,7 +107,6 @@ public class Utils {
 		broker.subscribe(nrs);
 
 
-		long start = System.currentTimeMillis();
 		//Run publisher
 		ExecutorService threadPool = Executors.newFixedThreadPool(NUMOFTHREADPOOL);
 		for(String fileName : reviewFileNames) {
@@ -140,6 +140,10 @@ public class Utils {
 		NewReviewSubscriber nrs = new NewReviewSubscriber();
 		broker.subscribe(ors);
 		broker.subscribe(nrs);
+		
+		//Start the broker helper
+		Thread threadBroker = new Thread(broker);
+		threadBroker.start();
 
 		//Run publisher
 		ExecutorService threadPool = Executors.newFixedThreadPool(NUMOFTHREADPOOL);
@@ -147,8 +151,6 @@ public class Utils {
 			threadPool.execute(new PublisherRunner(fileName, broker));
 		}
 		threadPool.shutdown();
-		Thread threadBroker = new Thread(broker);
-		threadBroker.start();
 		try {
 			threadPool.awaitTermination(5, TimeUnit.MINUTES);
 			//Add null to end broker

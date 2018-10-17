@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 import cs601.project2.Utils;
 
 public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
-	private ArrayList<Subscriber<T>> subscribers = new ArrayList<Subscriber<T>>();
-	private BrokerBlockingQueue<T> queue = new BrokerBlockingQueue<T>(20);
+	private ArrayList<Subscriber<T>> subscribers;
+	private BrokerBlockingQueue<T> queue;
 	private boolean finished = false;
 	
 	
