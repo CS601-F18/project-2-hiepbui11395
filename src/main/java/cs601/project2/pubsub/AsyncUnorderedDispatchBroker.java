@@ -10,22 +10,20 @@ import cs601.project2.Utils;
 public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	private ArrayList<Subscriber<T>> subscribers;
 	private ExecutorService threadPool;
-	
-	
+
+
 
 	public AsyncUnorderedDispatchBroker() {
 		this.subscribers = new ArrayList<Subscriber<T>>();
 		this.threadPool = Executors.newFixedThreadPool(Utils.NUMOFTHREADPOOL);
 	}
 
-	public synchronized void publish(T item) {
+	public void publish(T item) {
 		threadPool.execute(new Runnable() {
 			public void run() {
-//				synchronized(subscribers) {
-					T itemBeSent = item;
-					subscribers.forEach(subscriber -> subscriber.onEvent(itemBeSent));
-//				}
-		    }
+				T itemBeSent = item;
+				subscribers.forEach(subscriber -> subscriber.onEvent(itemBeSent));
+			}
 		});
 	}
 

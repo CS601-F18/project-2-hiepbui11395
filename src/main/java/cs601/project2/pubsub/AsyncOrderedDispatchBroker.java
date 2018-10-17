@@ -17,7 +17,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 		queue = new BrokerBlockingQueue<T>(Utils.NUMOFQUEUE);
 	}
 
-	public synchronized void publish(T item) {
+	public void publish(T item) {
 		queue.put(item);
 	}
 
